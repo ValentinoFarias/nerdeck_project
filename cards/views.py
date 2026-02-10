@@ -1,8 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.views.generic import TemplateView
 
 
-# Create your views here.
+class LandingPageView(TemplateView):
+	template_name = 'landingPage.html'
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the cards index.")
+
+class HomeView(TemplateView):
+	template_name = 'home.html'
+
