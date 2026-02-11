@@ -29,3 +29,51 @@ body {
   color: #000000;
 }
 
+.hero-title {
+	font-family: "Space Grotesk";
+  color: #000000;
+  font-size: 7rem; /* pick size you like */
+  font-weight: 700;
+}
+
+/* Hero video */
+#heroVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: #ffffff;
+}
+
+.btn-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25);
+}
+
+.btn-play-overlay:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #f6f3f3;
+}
+
+.hero-pause-row {
+	min-height: 56px;
+}
+
+.btn-pause-icon.pause-hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+

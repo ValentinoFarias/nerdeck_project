@@ -21,8 +21,8 @@
         <!--Styles CSS-->
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	</head>
-	<body class="d-flex flex-column min-vh-100 bg-light">
-		<header class="border-bottom bg-white">
+    <body class="d-flex flex-column min-vh-100 bg-light">
+        <header class="border-bottom bg-white">
 			<div class="container d-flex align-items-center justify-content-between py-2">
 				<a href="/" class="d-flex align-items-center text-decoration-none">
 					<img
@@ -41,7 +41,44 @@
                     {% endif %}
                 </div>
 			</div>
-		</header>
+        </header>
+        <hero class="py-4">
+            <div class="container">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h1 class="mb-3 text-center hero-title">Welcome to <span style="font-family: 'Fredoka'; font-size: 7rem; color: #000000; font-weight: 500;">Ner<span style="font-family: 'Fredoka'; font-size: 7rem; color: #E3B46D;">D</span>ecks!</span></h1>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="ratio ratio-16x9 mb-2 position-relative">
+                                    <video id="heroVideo" class="w-100 h-100" poster="{% static 'images/logo_nerdeck.png' %}">
+                                        <source src="{% static 'videos/nerdeck_intro_video.mp4' %}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <button
+                                        id="overlayPlayHeroVideo"
+                                        class="btn btn-play-overlay"
+                                        type="button"
+                                    >
+                                        &#9658;
+                                    </button>
+                                </div>
+                                <div class="hero-pause-row d-flex justify-content-center gap-2">
+                                    <button
+                                        id="pauseHeroVideo"
+                                        class="btn btn-outline-secondary btn-pause-icon pause-hidden"
+                                        type="button"
+                                    >
+                                        &#10074;&#10074;
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </hero>
 
 		<main id="main-home-content" class="flex-grow-1">
             {% if messages %}
@@ -158,6 +195,7 @@
 			integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 			crossorigin="anonymous"
 		></script>
+        <script src="{% static 'js/home.js' %}"></script>
 	</body>
 </html>
 
