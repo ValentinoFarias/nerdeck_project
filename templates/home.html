@@ -20,8 +20,13 @@
 		>
         <!--Styles CSS-->
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+        <!-- GSAP + transition logic -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script src="{% static 'js/transition.js' %}"></script>
 	</head>
     <body class="d-flex flex-column min-vh-100 bg-light">
+        {% include 'transition_overlay.html' %}
         <header class="border-bottom bg-white">
 			<div class="container d-flex align-items-center justify-content-between py-2">
 				<a href="/" class="d-flex align-items-center text-decoration-none">

@@ -23,6 +23,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   video.addEventListener("ended", () => {
-    playButton.classList.remove("d-none");
+    // When the video ends, reset and show the NERDECKS text again
+    video.pause();
+    video.currentTime = 0;
+    video.classList.add("d-none");
+
+    if (heroTextTrigger) {
+      heroTextTrigger.classList.remove("d-none");
+    }
+
+    // Keep the play button hidden since we are back to the text state
+    playButton.classList.add("d-none");
   });
 });

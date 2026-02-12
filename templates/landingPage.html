@@ -21,8 +21,9 @@
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
 	</head>
 	<body class="d-flex flex-column min-vh-100 bg-white">
+		{% include 'transition_overlay.html' %}
 		<main class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
-			<a href="{% url 'home' %}" class="d-inline-block">
+			<a href="{% url 'home' %}" class="d-inline-block" id="landing-logo-image-link">
 				<img
 					src="{% static 'images/logo_nerdeck.png' %}"
 					alt="Nerdeck logo"
@@ -30,11 +31,11 @@
 					style="max-width: 260px; height: auto;"
 				>
 			</a>
-			<h1 class="mt-4" id="nerdeckLogoName"><a href="{% url 'home' %}">NerDecks</a></h1>
+			<h1 class="mt-4" id="nerdeckLogoName"><a href="{% url 'home' %}" id="landing-logo-text-link">NERDECKS</a></h1>
 		</main>
 
 		<footer class="py-3 text-center text-muted small">
-			&copy; NerDeck 
+			&copy; NerDecks
 		</footer>
 
 		<!-- Bootstrap JS (optional) -->
@@ -43,6 +44,44 @@
 			integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 			crossorigin="anonymous"
 		></script>
+
+		<!-- GSAP and page transition logic -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+		<script src="{% static 'js/transition.js' %}"></script>
+		<script>
+		  document.addEventListener('DOMContentLoaded', function () {
+		    var imageLogoLink = document.getElementById('landing-logo-image-link');
+		    var textLogoLink = document.getElementById('landing-logo-text-link');
+
+		    function handleLogoClick(event) {
+		      if (!window.nerdeckTransition || !window.nerdeckTransition.animateTransition) {
+		        return; // Fallback: allow normal navigation
+		      }
+
+		      event.preventDefault();
+		      var targetUrl = event.currentTarget.href;
+
+		      try {
+		        if (window.sessionStorage) {
+		          window.sessionStorage.setItem('runRevealOnNextPage', '1');
+		        }
+		      } catch (e) {
+		        // Ignore sessionStorage errors, just skip reveal-on-next-page
+		      }
+
+		      window.nerdeckTransition.animateTransition().then(function () {
+		        window.location.href = targetUrl;
+		      });
+		    }
+
+		    if (imageLogoLink) {
+		      imageLogoLink.addEventListener('click', handleLogoClick);
+		    }
+		    if (textLogoLink) {
+		      textLogoLink.addEventListener('click', handleLogoClick);
+		    }
+		  });
+		</script>
 	</body>
 </html>
 
