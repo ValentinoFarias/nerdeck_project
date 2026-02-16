@@ -3,26 +3,59 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Basic metadata, page title and CSS imports -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Sign up - Nerdeck</title>
+    <title>Sign up - Nerdecks</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     >
+    <!-- Favicons for browser tab and mobile icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicons/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicons/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicons/favicon-16x16.png' %}">
+    <link rel="shortcut icon" href="{% static 'images/favicons/favicon.ico' %}" type="image/x-icon">
+    <link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
   <body class="d-flex flex-column min-vh-100 bg-light">
+    <!-- Site header / navbar: logo on the left, auth-aware buttons on the right -->
+    <header class="border-bottom bg-white">
+      <div class="container d-flex align-items-center justify-content-between py-2">
+        <a href="/" class="d-flex align-items-center text-decoration-none">
+          <img
+            src="{% static 'images/logo_verde.png' %}"
+            alt="Nerdecks logo"
+            style="height: 50px; width: auto;"
+          >
+        </a>
+        <div class="d-flex gap-2">
+          {% if user.is_authenticated %}
+            <a href="{% url 'decks' %}" class="btn btn-primary scramble-text">Decks</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Log out</a>
+          {% else %}
+            <a href="{% url 'home' %}" class="btn btn-primary scramble-text">Home</a>
+           
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content: centered signup card -->
     <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
       <div class="container" style="max-width: 420px;">
+        <!-- Page title -->
         <h1 class="h3 mb-4 text-center">Create an account</h1>
+        <!-- Signup form rendered from EmailSignupForm -->
         <form method="post" class="card shadow-sm p-4 bg-white border-0">
           {% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="btn btn-primary w-100 mt-2">Create your account!</button>
         </form>
+        <!-- Link back to home for users who already have an account -->
         <p class="mt-3 text-center small text-muted">
           Already have an account?
           <a href="/home/" class="text-decoration-none">Go back home</a>
@@ -30,10 +63,12 @@
       </div>
     </main>
 
+    <!-- JS: Bootstrap bundle and scramble hover effect for nav buttons -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    <script src="{% static 'js/scramble_effect.js' %}"></script>
   </body>
 </html>

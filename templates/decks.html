@@ -3,6 +3,7 @@
 <!doctype html>
 <html lang="en">
 	<head>
+		<!-- Basic metadata, page title and CSS includes -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>NerDeck - Your decks</title>
@@ -12,27 +13,36 @@
 			integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
 			crossorigin="anonymous"
 		>
+		<!-- Favicons -->
+		<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicons/apple-touch-icon.png' %}">
+		<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicons/favicon-32x32.png' %}">
+		<link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicons/favicon-16x16.png' %}">
+		<link rel="shortcut icon" href="{% static 'images/favicons/favicon.ico' %}" type="image/x-icon">
+		<link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}">
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
 	</head>
 	<body class="d-flex flex-column min-vh-100 bg-light">
+		<!-- Top navigation bar with logo, Home and Logout buttons -->
 		<header class="border-bottom bg-white">
 			<div class="container d-flex align-items-center justify-content-between py-2">
 				<a href="{% url 'home' %}" class="d-flex align-items-center text-decoration-none">
 					<img
-						src="{% static 'images/logo_nerdeck.png' %}"
-						alt="NerDeck logo"
-						style="height: 32px; width: auto;"
+						src="{% static 'images/logo_verde.png' %}"
+						alt="NerDecks logo"
+						style="height: 50px; width: auto;"
 					>
 				</a>
 				<div class="d-flex gap-2">
-					<a href="{% url 'home' %}" class="btn btn-outline-secondary">Home</a>
-					<a href="{% url 'logout' %}" class="btn btn-danger">Log out</a>
+					<a href="{% url 'home' %}" class="btn btn-primary scramble-text">Home</a>
+					<a href="{% url 'logout' %}" class="btn btn-outline-secondary">Log out</a>
 				</div>
 			</div>
 		</header>
 
+		<!-- Main content: list of user's decks and actions -->
 		<main class="flex-grow-1 py-5">
 			<div class="container">
+				<!-- Flash messages (success, error, etc.) -->
 				{% if messages %}
 					<div class="mb-3">
 						{% for message in messages %}
@@ -43,6 +53,7 @@
 					</div>
 				{% endif %}
 				<h1 class="h3 mb-3">Your decks</h1>
+				<!-- Form to create a new deck; JS fills hidden title field -->
 				<div class="text-center mb-4">
 					<form id="create-deck-form" method="post" action="{% url 'create_deck' %}" class="d-inline">
 						{% csrf_token %}
@@ -50,6 +61,7 @@
 						<button type="button" class="btn btn-primary" onclick="createNerDeck()">Create a NerDeck</button>
 					</form>
 				</div>
+				<!-- Table listing all decks with counts for due and total cards -->
 				<div class="row justify-content-center">
 					<div class="col-md-8 col-lg-6">
 						<div class="table-responsive">
@@ -86,6 +98,7 @@
 						</div>
 					</div>
 				</div>
+				<!-- Button opens modal to delete an existing deck -->
 				<div class="text-center mt-3">
 					<button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteDeckModal">
 						Delete a NerDeck
@@ -94,7 +107,7 @@
 			</div>
 		</main>
 
-		<!-- Delete Deck Modal -->
+		<!-- Delete Deck Modal: lets the user pick and confirm a deck to delete -->
 		<div class="modal fade" id="deleteDeckModal" tabindex="-1" aria-labelledby="deleteDeckModalLabel" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
@@ -127,17 +140,20 @@
 			</div>
 		</div>
 
+		<!-- Simple footer with copyright -->
 		<footer class="py-4 bg-white border-top mt-auto">
 			<div class="container text-center text-muted small">
-				&copy; NerDeck
+				&copy; NerDecks
 			</div>
 		</footer>
 
+		<!-- JS: Bootstrap bundle, scramble hover effect, and page-specific logic -->
 		<script
 			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 			integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 			crossorigin="anonymous"
 		></script>
+		<script src="{% static 'js/scramble_effect.js' %}"></script>
 		<script src="{% static 'js/decks.js' %}"></script>
 	</body>
 </html>

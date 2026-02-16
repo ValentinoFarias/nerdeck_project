@@ -1,3 +1,14 @@
+"""View functions and classes for the NerDeck spaced‑repetition app.
+
+This module contains:
+- Simple landing/home pages (no logic, just templates)
+- Deck listing and CRUD views
+- Flashcard creation and study views (spaced‑repetition logic)
+- Signup and logout helpers
+"""
+
+import json
+
 from django.views.generic import TemplateView
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import login, logout
@@ -9,17 +20,24 @@ from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db.models import Q, Count
-import json
 
 from .forms import EmailSignupForm, CardForm
 from .models import Deck, Card, ReviewSession, CardSRS
 
 
+# Default review ladder in days used by the simple spaced‑repetition system.
 DEFAULT_LADDER_DAYS = [1, 3, 7, 14, 30, 60, 120, 240, 365]
 
 
 def _step_from_interval(interval_days: int) -> int:
-    """Approximate the next step based on the last scheduled interval."""
+    """Map a card's current interval (in days) to a step index.
+
+    The step index is an integer position in DEFAULT_LADDER_DAYS and is used
+    on the frontend to determine which "step" the card is currently on.
+    Unknown intervals are treated as brand‑new cards (step 0).
+    """
+
+    # Guard against None/negative intervals.
     interval = max(interval_days or 0, 0)
 
     for idx, days in enumerate(DEFAULT_LADDER_DAYS):
@@ -31,32 +49,51 @@ def _step_from_interval(interval_days: int) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# Simple template‑only pages
+# ---------------------------------------------------------------------------
+
+
 class LandingPageView(TemplateView):
+    """Render the minimal landing page with the NerDeck logo and link to home."""
+
     template_name = "landingPage.html"
 
 
 class HomeView(TemplateView):
+    """Render the marketing/overview home page (no auth required)."""
+
     template_name = "home.html"
+
+
+# ---------------------------------------------------------------------------
+# Deck listing and basic CRUD
+# ---------------------------------------------------------------------------
 
 
 @method_decorator(login_required, name="dispatch")
 class DecksView(TemplateView):
+    """Show the logged‑in user's active decks with due/total card counts."""
+
     template_name = "decks.html"
 
     def get_context_data(self, **kwargs):
+        """Add the user's decks plus today/total card counts into the context."""
         context = super().get_context_data(**kwargs)
 
         now = timezone.localtime()
         end_of_today = now.replace(hour=23, minute=59, second=59, microsecond=999999)
 
+        # Base queryset: all non‑archived decks for this user.
         decks = (
             Deck.objects
             .filter(user=self.request.user, is_archived=False)
             .annotate(
+                # Total active cards per deck.
                 total_cards=Count(
                     "card",
                     filter=Q(card__status="active"),
-                    distinct=True
+                    distinct=True,
                 ),
             )
             .order_by("created_at")
@@ -64,13 +101,13 @@ class DecksView(TemplateView):
 
         decks = list(decks)
 
+        # For each deck, compute how many cards are due today.
         for deck in decks:
-            deck.today_cards = Card.objects.filter(
-                deck=deck,
-                status="active",
-            ).filter(
-                Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True)
-            ).count()
+            deck.today_cards = (
+                Card.objects.filter(deck=deck, status="active")
+                .filter(Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True))
+                .count()
+            )
 
         context["decks"] = decks
         return context
@@ -78,6 +115,8 @@ class DecksView(TemplateView):
 
 @login_required
 def deck_flashcards(request, deck_id):
+    """Show all active flashcards in a single deck."""
+
     deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
     cards = Card.objects.filter(deck=deck, status="active").order_by("created_at")
     return render(request, "flashcards.html", {"deck": deck, "cards": cards})
@@ -85,6 +124,8 @@ def deck_flashcards(request, deck_id):
 
 @login_required
 def new_flashcard(request, deck_id):
+    """Create a new flashcard inside the given deck."""
+
     deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
 
     if request.method == "POST":
@@ -101,12 +142,24 @@ def new_flashcard(request, deck_id):
     return render(request, "new_flashcard.html", {"deck": deck, "form": form})
 
 
+# ---------------------------------------------------------------------------
+# Study / spaced‑repetition views
+# ---------------------------------------------------------------------------
+
+
 @login_required
 def study_deck(request, deck_id):
+    """Start a study session for a given deck.
+
+    Selects all due cards for today, determines the current card and its SRS
+    state, and creates a ReviewSession row for tracking the session.
+    """
+
     deck = get_object_or_404(Deck, id=deck_id, user=request.user, is_archived=False)
     now = timezone.localtime()
     end_of_today = now.replace(hour=23, minute=59, second=59, microsecond=999999)
 
+    # All active cards that are due now or have never been scheduled.
     due_cards = (
         Card.objects.filter(deck=deck, status="active")
         .filter(Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True))
@@ -121,13 +174,14 @@ def study_deck(request, deck_id):
         "due_at": "",
     }
 
+    # If the current card already has SRS data, expose it to the frontend.
     if current_card and hasattr(current_card, "cardsrs") and current_card.cardsrs:
         current_card_state = {
             "step": _step_from_interval(current_card.cardsrs.interval_days),
             "due_at": current_card.cardsrs.due_at.isoformat(),
         }
 
-    # Create a new review session for this user
+    # Create a new review session for this user.
     session = ReviewSession.objects.create(
         user=request.user,
         mode="review",  # or "cram" later if you add that mode in the UI
@@ -145,6 +199,12 @@ def study_deck(request, deck_id):
 @login_required
 @require_POST
 def review_answer(request, deck_id):
+    """AJAX endpoint called when the user answers a card.
+
+    Updates the CardSRS record based on whether the answer was right/wrong and
+    the chosen next due date, then returns the next due card (if any).
+    """
+
     try:
         payload = json.loads(request.body.decode("utf-8"))
     except json.JSONDecodeError:
@@ -155,7 +215,7 @@ def review_answer(request, deck_id):
 
     card_id = payload.get("card_id")
     is_right = payload.get("is_right")
-    step = payload.get("step")
+    step = payload.get("step")  # currently unused but kept for future logic
     due_at_str = payload.get("due_at")
 
     if card_id is None or is_right is None:
@@ -168,7 +228,7 @@ def review_answer(request, deck_id):
         deck__user=request.user,
     )
 
-    # Parse due_at from ISO string; if missing, fall back to now
+    # Parse due_at from ISO string; if missing, fall back to now.
     if due_at_str:
         try:
             due_at = timezone.datetime.fromisoformat(due_at_str.replace("Z", "+00:00"))
@@ -179,13 +239,14 @@ def review_answer(request, deck_id):
     else:
         due_at = timezone.now()
 
+    # Create or update the SRS record for this card.
     srs, _ = CardSRS.objects.get_or_create(
         card=card,
         defaults={"due_at": due_at},
     )
 
     srs.due_at = due_at
-    # Interval in days from today to due_at
+    # Interval in days from today to due_at.
     srs.interval_days = (due_at.date() - timezone.now().date()).days
     srs.last_reviewed_at = timezone.now()
 
@@ -196,13 +257,11 @@ def review_answer(request, deck_id):
 
     srs.save()
 
+    # Next due card: still active, due today or earlier (or never scheduled).
     due_filter = Q(cardsrs__due_at__lte=end_of_today) | Q(cardsrs__isnull=True)
 
     next_card = (
-        Card.objects.filter(
-            deck_id=deck_id,
-            status="active",
-        )
+        Card.objects.filter(deck_id=deck_id, status="active")
         .filter(due_filter)
         .exclude(id=card.id)
         .select_related("cardsrs")
@@ -228,6 +287,8 @@ def review_answer(request, deck_id):
 
 @login_required
 def create_deck(request):
+    """Handle creation of a new deck via the small form on decks.html."""
+
     if request.method != "POST":
         return redirect("decks")
 
@@ -243,6 +304,8 @@ def create_deck(request):
 
 @login_required
 def delete_deck(request):
+    """Delete a deck selected from the modal list on decks.html."""
+
     if request.method != "POST":
         return redirect("decks")
 
@@ -262,17 +325,28 @@ def delete_deck(request):
     return redirect("decks")
 
 
+# ---------------------------------------------------------------------------
+# Auth helpers (logout + signup)
+# ---------------------------------------------------------------------------
+
+
 def logout_view(request):
+    """Log the user out and send them back to the home page."""
+
     logout(request)
     return redirect("home")
 
 
 class SignupView(View):
+    """Handle email‑based signup using EmailSignupForm."""
+
     def get(self, request):
+        """Render an empty signup form."""
         form = EmailSignupForm()
         return render(request, "signup.html", {"form": form})
 
     def post(self, request):
+        """Validate the submitted form and create/log the user in."""
         form = EmailSignupForm(request.POST)
         if form.is_valid():
             user = form.save()
@@ -280,7 +354,7 @@ class SignupView(View):
 
             messages.success(
                 request,
-                f"Account created successfully. Welcome, {user.email}!"
+                f"Account created successfully. Welcome, {user.email}!",
             )
 
             return redirect("home")
