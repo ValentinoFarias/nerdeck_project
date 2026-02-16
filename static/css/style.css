@@ -260,3 +260,12 @@ body.run-reveal .transition-row .block {
 }
 
 
+/* Decks page */
+.your-decks {
+  font-family: "Space Grotesk";
+  color: #000000;
+  font-weight: 700;
+  font-size: 3rem;
+}
+
+
