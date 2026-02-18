@@ -28,14 +28,18 @@ A spaced repetition web application that helps users remember information effici
 - As a user, I want to create cards inside decks so I can study specific content.
 - As a user, I want to review cards using spaced repetition so I can remember them long term.
 - As a user, I want to mark cards as correct or incorrect so the system can adjust review timing.
-- As a user, I want to see only my own decks and cards in the admin panel.
+- As a user, I want to see only my own decks and cards.
 - As a user, I want a clean and minimal interface so I can focus on studying.
 
 ---
 
 ## Wireframes
 
-(Wireframes screenshots to be added here)
+For the design of the wire frame I used Adobe XD.
+
+<img src="static/images/documentation/Wireframe.png" alt="NerDeck wireframe">
+
+
 
 ---
 
@@ -60,7 +64,7 @@ Kanban board structure:
 - Testing  
 - Done  
 
-(Screenshots of Kanban board to be added)
+<img src="static/images/documentation/kanban_nerdeck.png" alt="kanban image of nerdeck workflow">
 
 ---
 
@@ -74,6 +78,8 @@ The project uses:
 
 These fonts were chosen for clarity and modern appearance.
 
+<img src="static/images/documentation/fonts_nerdecks.png" alt="Images of fonts from google fonts">
+
 ---
 
 ## Colour Scheme
@@ -86,7 +92,10 @@ Accent:
 - Blue (Bootstrap primary)
 - Custom brand colors for NerDeck logo
 
-(Screenshot of colour palette to be added)
+Coolors.co was used as reference for quick colors pallete selection.
+
+<img src="static/images/documentation/palettes_nerdecks.png" alt="Screenshot from coolors.co" >
+
 
 ---
 
@@ -113,7 +122,7 @@ Relationships:
 - One Deck → Many Cards  
 - One Card → Belongs to exactly one Deck  
 
-(Database diagram image to be added)
+<img src="static/images/documentation/erd_nerdecks.png" alt="Screenshot of NerDeck app ERD">
 
 ---
 
