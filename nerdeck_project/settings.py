@@ -1,3 +1,4 @@
+
 from pathlib import Path
 import os
 import dj_database_url
@@ -10,12 +11,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = "django-insecure-6$4@zs8u_fzo2*nszwf3wjgg0l9eum4xiqxnxcw27s9nh4cn*3"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = True
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost,.herokuapp.com").split(",")
+ALLOWED_HOSTS = [
+    ".herokuapp.com",
+    "127.0.0.1",
+    "localhost",
+]
 
 # Application definition
 INSTALLED_APPS = [
