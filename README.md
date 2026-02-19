@@ -230,7 +230,7 @@ Cards are filtered by logged-in user.
 - Adobe Photoshop
 - Adobe Illustrator
 - Adobe Firefly
-_ ElevenLabs
+- ElevenLabs
 - NanoBanana 
 
 ---
@@ -249,7 +249,7 @@ _ ElevenLabs
 
 ## Google Lighthouse Performance
 
-(Screenshots to be added)
+<img src="static/images/documentation/lighthouse_nerdecks.png" alt="Screenshot of website performance">
 
 ---
 
