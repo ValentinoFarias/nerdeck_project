@@ -2,6 +2,8 @@
 
 A spaced repetition web application that helps users remember information efficiently by reviewing cards at scientifically optimized intervals.
 
+<img src="static/images/landing_page_nerdecks.png" alt="Screenshot landing page nerdecks">
+
 ---
 
 # Table Of Contents

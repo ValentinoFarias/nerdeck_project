@@ -17,6 +17,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.http import require_POST
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.http import JsonResponse
 from django.utils import timezone
 from django.db import transaction
@@ -55,12 +56,14 @@ def _step_from_interval(interval_days: int) -> int:
 # ---------------------------------------------------------------------------
 
 
+@method_decorator(xframe_options_exempt, name="dispatch")
 class LandingPageView(TemplateView):
     """Render the minimal landing page with the NerDeck logo and link to home."""
 
     template_name = "landingPage.html"
 
 
+@method_decorator(xframe_options_exempt, name="dispatch")
 class HomeView(TemplateView):
     """Render the marketing/overview home page (no auth required)."""
 
