@@ -15,7 +15,12 @@ class Folder(models.Model):
 
 class Deck(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, null=True, blank=True)
+    folder = models.ForeignKey(
+        Folder,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
     sort_order = models.IntegerField(default=0)
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -36,7 +41,11 @@ class Card(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
     front_text = models.TextField()
     back_text = models.TextField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="active")
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="active",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -74,8 +83,19 @@ class ReviewSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     started_at = models.DateTimeField(default=timezone.now)
     ended_at = models.DateTimeField(null=True, blank=True)
-    mode = models.CharField(max_length=10, choices=MODE_CHOICES, default="review")
+    mode = models.CharField(
+        max_length=10,
+        choices=MODE_CHOICES,
+        default="review",
+    )
 
     def __str__(self):
-        ended = self.ended_at.strftime("%Y-%m-%d %H:%M") if self.ended_at else "..."
-        return f"{self.user.username} - {self.mode} - {self.started_at:%Y-%m-%d %H:%M} -> {ended}"
+        if self.ended_at:
+            ended = self.ended_at.strftime("%Y-%m-%d %H:%M")
+        else:
+            ended = "..."
+
+        return (
+            f"{self.user.username} - {self.mode} - "
+            f"{self.started_at:%Y-%m-%d %H:%M} -> {ended}"
+        )
