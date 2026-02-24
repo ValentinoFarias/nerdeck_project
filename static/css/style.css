@@ -428,6 +428,58 @@ body.run-reveal .transition-row .block {
   overflow: hidden;
 }
 
+.signup-shell {
+  max-width: 460px;
+}
+
+.signup-card-form p {
+  margin-bottom: 1rem;
+}
+
+.signup-card-form label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.signup-card-form input {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0.62rem 0.78rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.signup-card-form input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+.signup-card-form .helptext {
+  display: block;
+  margin-top: 0.45rem;
+  color: #64748b;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+
+.signup-card-form ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  color: #64748b;
+  font-size: 0.86rem;
+}
+
+.signup-card-form .errorlist {
+  list-style: none;
+  margin: 0 0 0.45rem;
+  padding-left: 0;
+  color: #b42318;
+  font-size: 0.88rem;
+}
+
 .deck-table {
   width: 100%;
   table-layout: fixed;

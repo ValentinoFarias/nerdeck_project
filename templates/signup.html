@@ -25,7 +25,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicons/favicon-16x16.png' %}">
     <link rel="shortcut icon" href="{% static 'images/favicons/favicon.ico' %}" type="image/x-icon">
     <link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=20260217-1">
   </head>
   <body class="d-flex flex-column min-vh-100 bg-light">
     <!-- Site header / navbar -->
@@ -53,11 +53,11 @@
 
     <!-- Main content: centered signup card -->
     <main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
-      <div class="container" style="max-width: 420px;">
+      <div class="container signup-shell">
         <!-- Page title -->
-        <h1 class="h3 mb-4 text-center">Create an account</h1>
+        <h1 class="h3 mb-4 text-center">CREATE AN ACCOUNT</h1>
         <!-- Signup form rendered from EmailSignupForm -->
-        <form method="post" class="card shadow-sm p-4 bg-white border-0">
+        <form method="post" class="deck-table-wrap signup-card-form p-4">
           {% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="btn btn-primary w-100 mt-2">Create your account!</button>
