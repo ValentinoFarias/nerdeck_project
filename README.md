@@ -72,10 +72,9 @@ The project was developed using an iterative Agile approach:
 Kanban board structure:  
 - To Do  
 - In Progress  
-- Testing  
 - Done  
 
-<img src="static/images/documentation/kanban_nerdeck.png" alt="kanban image of nerdeck workflow">
+<img src="static/images/documentation/nerdecks_project_board.png" alt="kanban image of nerdeck workflow">
 
 ---
 
