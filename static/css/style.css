@@ -420,6 +420,18 @@ body.run-reveal .transition-row .block {
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
 }
+
+#deleteDeckModal .modal-content,
+#deleteDeckConfirmModal .modal-content {
+  border-radius: 16px;
+  border: 1px solid #e6ebf2;
+}
+
+#deleteDeckModal .modal-title,
+#deleteDeckConfirmModal .modal-title {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 700;
+}
 .deck-table-wrap {
   background: #ffffff;
   border: 1px solid #e6ebf2;

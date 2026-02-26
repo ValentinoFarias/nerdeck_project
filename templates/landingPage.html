@@ -2,10 +2,11 @@
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Nerdecks</title>
+		<head>
+			<!-- Basic metadata and landing page title -->
+			<meta charset="utf-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<title>Nerdecks</title>
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,30 +27,35 @@
 		<!--Styles CSS-->
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
 	</head>
-	<body class="d-flex flex-column min-vh-100 bg-white">
-		{% include 'transition_overlay.html' %}
-		<main class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
-			<a href="{% url 'home' %}" class="d-inline-block" id="landing-logo-image-link">
+		<body class="d-flex flex-column min-vh-100 bg-white">
+			<!-- Shared transition overlay used by transition.js animations -->
+			{% include 'transition_overlay.html' %}
+			<!-- Centered hero area with logo image and animated brand text -->
+			<main class="flex-grow-1 d-flex flex-column justify-content-center align-items-center">
+				<!-- Clicking the logo image takes the user to home -->
+				<a href="{% url 'home' %}" class="d-inline-block" id="landing-logo-image-link">
 				<img
 					src="{% static 'images/newlogonerdecks.png' %}"
 					alt="Nerdeck logo"
 					class="img-fluid"
 					style="max-width: 260px; height: auto;"
 				>
-			</a>
-			<h1 class="mt-4" id="nerdeckLogoName">
-				<a href="{% url 'home' %}" id="landing-logo-text-link" class="glitch-btn">
+				</a>
+				<h1 class="mt-4" id="nerdeckLogoName">
+					<!-- Glitch button text; extra spans are visual slices animated by CSS/JS -->
+					<a href="{% url 'home' %}" id="landing-logo-text-link" class="glitch-btn">
 					NERDECKS
 					<span class="slice"></span>
 					<span class="slice"></span>
 					<span class="slice"></span>
 				</a>
-			</h1>
-		</main>
+				</h1>
+			</main>
 
-		<footer class="py-3 text-center text-muted small">
-			&copy; NerDecks
-		</footer>
+			<!-- Minimal footer -->
+			<footer class="py-3 text-center text-muted small">
+				&copy; NerDecks
+			</footer>
 
 		<!-- Bootstrap JS (optional) -->
 		<script
@@ -58,10 +64,9 @@
 			crossorigin="anonymous"
 		></script>
 
-		<!-- GSAP and page transition logic -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+			<!-- GSAP + custom transition/glitch scripts for landing interactions -->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 		<script src="{% static 'js/transition.js' %}"></script>
 		<script src="{% static 'js/glitch_effect.js' %}"></script>
 	</body>
 </html>
-

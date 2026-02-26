@@ -165,7 +165,7 @@ def new_flashcard(request, deck_id):
             card.save()
 
             if is_edit_mode:
-                messages.success(request, "Flashcard updated.")
+                messages.success(request, "Flashcard successfully edited.")
             else:
                 messages.success(request, "Flashcard created.")
 

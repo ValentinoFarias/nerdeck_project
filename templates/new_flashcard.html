@@ -3,13 +3,15 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Basic metadata and dynamic page title for create/edit mode -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>NerDecks - {% if is_edit_mode %}Edit flashcard{% else %}New flashcard{% endif %}</title>
-    <!-- Google Fonts -->
+    <!-- Web fonts used by the page -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <!-- Bootstrap core styles -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -24,7 +26,7 @@
     <link rel="manifest" href="{% static 'images/favicons/site.webmanifest' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
-  <!-- Navbar -->
+  <!-- Header / navigation -->
   <body class="new-flashcard-page d-flex flex-column min-vh-100 bg-light">
     <header class="home-header py-3">
       <div class="container">
@@ -42,12 +44,13 @@
         </nav>
       </div>
     </header>
-<!-- Main content -->
+    <!-- Main content: shared form for creating and editing flashcards -->
     <main class="flex-grow-1 py-5 new-flashcard-main">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-12 col-md-9 col-lg-7">
             <section class="new-flashcard-shell">
+              <!-- Heading text changes based on whether user is editing an existing card -->
               <header class="new-flashcard-header text-center">
                 <p class="new-flashcard-kicker mb-2">{% if is_edit_mode %}Edit Card{% else %}Create New Card{% endif %}</p>
                 <h1 class="new-flashcard-title mb-2">{% if is_edit_mode %}EDIT FLASHCARD{% else %}NEW FLASHCARD{% endif %}</h1>
@@ -55,21 +58,27 @@
                   for <span class="new-flashcard-deck-name">{{ deck.title }}</span>
                 </p>
               </header>
+              <!-- POST form for card data -->
               <form method="post" class="new-flashcard-form mt-4">
                 {% csrf_token %}
+                <!-- Present only in edit mode so backend knows which card to update -->
                 {% if is_edit_mode and edit_card %}
                   <input type="hidden" name="edit_card_id" value="{{ edit_card.id }}">
                 {% endif %}
+                <!-- Keeps return flow context (e.g., back to study after saving) -->
                 {% if next_target %}
                   <input type="hidden" name="next" value="{{ next_target }}">
                 {% endif %}
+                <!-- Django form fields with validation errors -->
                 {{ form.as_p }}
                 <div class="d-flex justify-content-between mt-4">
+                  <!-- Cancel destination depends on where the user came from -->
                   {% if next_target == "study" %}
                     <a href="{% url 'study' deck.id %}" class="btn btn-outline-secondary">Cancel</a>
                   {% else %}
                     <a href="{% url 'decks' %}" class="btn btn-outline-secondary">Cancel</a>
                   {% endif %}
+                  <!-- Submit label changes with mode, while form endpoint stays the same -->
                   <button type="submit" class="btn btn-primary">{% if is_edit_mode %}Update flashcard{% else %}Save flashcard{% endif %}</button>
                 </div>
               </form>
@@ -78,19 +87,18 @@
         </div>
       </div>
     </main>
-<!-- Footer -->
+    <!-- Footer -->
     <footer class="py-4 bg-white border-top mt-auto">
       <div class="container text-center text-muted small">
         &copy; NerDeck
       </div>
     </footer>
-<!-- Bootstrap JS Bundle -->
+    <!-- Bootstrap JS + shared scramble-effect script -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-<!-- Scramble effect-->
- <script src="{% static 'js/scramble_effect.js' %}"></script>
+    <script src="{% static 'js/scramble_effect.js' %}"></script>
   </body>
 </html>

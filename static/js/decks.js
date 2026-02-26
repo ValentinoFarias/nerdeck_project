@@ -6,6 +6,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const hiddenTitle = document.getElementById("deck-title-input");
   const form = document.getElementById("create-deck-form");
   const modalEl = document.getElementById("createDeckModal");
+  const deleteDeckModalEl = document.getElementById("deleteDeckModal");
+  const deleteDeckConfirmModalEl = document.getElementById("deleteDeckConfirmModal");
+  const deleteDeckConfirmNameEl = document.getElementById("deleteDeckConfirmName");
+  const confirmDeleteDeckBtn = document.getElementById("confirmDeleteDeckBtn");
+  const deleteDeckForms = document.querySelectorAll(".delete-deck-form");
 
   if (confirmBtn && input && hiddenTitle && form && modalEl) {
     confirmBtn.addEventListener("click", () => {
@@ -22,6 +27,85 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  if (!deleteDeckForms.length) {
+    return;
+  }
+
+  function getDeckNameFromForm(deleteDeckForm) {
+    return (
+      deleteDeckForm.querySelector(".delete-deck-name")?.textContent?.trim() ||
+      "this deck"
+    );
+  }
+
+  if (
+    !window.bootstrap ||
+    !deleteDeckConfirmModalEl ||
+    !deleteDeckConfirmNameEl ||
+    !confirmDeleteDeckBtn
+  ) {
+    deleteDeckForms.forEach((deleteDeckForm) => {
+      deleteDeckForm.addEventListener("submit", (event) => {
+        const deckName = getDeckNameFromForm(deleteDeckForm);
+        const shouldDelete = window.confirm(
+          `Are you sure you want to delete the NerDeck "${deckName}"?`
+        );
+        if (!shouldDelete) {
+          event.preventDefault();
+        }
+      });
+    });
+    return;
+  }
+
+  const deleteDeckPickerModal = deleteDeckModalEl
+    ? window.bootstrap.Modal.getOrCreateInstance(deleteDeckModalEl)
+    : null;
+  const deleteDeckConfirmModal = window.bootstrap.Modal.getOrCreateInstance(
+    deleteDeckConfirmModalEl
+  );
+  let pendingDeleteDeckForm = null;
+
+  deleteDeckForms.forEach((deleteDeckForm) => {
+    deleteDeckForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      pendingDeleteDeckForm = deleteDeckForm;
+      deleteDeckConfirmNameEl.textContent = getDeckNameFromForm(deleteDeckForm);
+
+      if (deleteDeckPickerModal && deleteDeckModalEl?.classList.contains("show")) {
+        const showConfirmModal = () => {
+          deleteDeckModalEl.removeEventListener("hidden.bs.modal", showConfirmModal);
+          deleteDeckConfirmModal.show();
+        };
+        deleteDeckModalEl.addEventListener("hidden.bs.modal", showConfirmModal);
+        deleteDeckPickerModal.hide();
+        return;
+      }
+
+      deleteDeckConfirmModal.show();
+    });
+  });
+
+  deleteDeckConfirmModalEl.addEventListener("show.bs.modal", () => {
+    confirmDeleteDeckBtn.disabled = false;
+  });
+
+  confirmDeleteDeckBtn.addEventListener("click", () => {
+    if (!pendingDeleteDeckForm) return;
+    const formToSubmit = pendingDeleteDeckForm;
+    pendingDeleteDeckForm = null;
+    confirmDeleteDeckBtn.disabled = true;
+    formToSubmit.submit();
+  });
+
+  deleteDeckConfirmModalEl.addEventListener("hidden.bs.modal", () => {
+    if (!pendingDeleteDeckForm) return;
+    pendingDeleteDeckForm = null;
+    if (deleteDeckPickerModal) {
+      deleteDeckPickerModal.show();
+    }
+  });
 });
 
 

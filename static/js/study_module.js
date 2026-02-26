@@ -231,6 +231,8 @@ if (
         deleteModal.hide();
       }
       moveToNextCard(data.next_card);
+      clearReviewMessage();
+      showTransientMessage("Flashcard successfully deleted.", 3000);
     } catch (e) {
       console.error("Failed to delete flashcard", e);
       clearReviewMessage();

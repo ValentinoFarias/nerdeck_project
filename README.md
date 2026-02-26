@@ -201,6 +201,8 @@ This modular design keeps organization, learning logic, and tracking cleanly sep
 
 Cards are filtered by logged-in user.
 
+<img src="static/images/documentation/features.png" alt="Features Screenshot">
+
 ---
 
 ## Authentication & Authorisation
